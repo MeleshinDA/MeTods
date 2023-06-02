@@ -13,9 +13,9 @@ public class Program
         
         for (var N = 10; N <= 30; N += 10)
         {
-            Рисовать(ТочноеРешение(startY, startX, N), N, "Точное решение");
-            Рисовать(МетодЭйлера(startY, startX, N), N, "Метод Эйлера");
-            Рисовать(ФормулаТейлора3Порядка(startY, startX, N), N, "ФормулаТейлора3Порядка");
+            Рисовать(ExactSolution(startY, startX, N), N, "Точное решение");
+            Рисовать(EulerMethod(startY, startX, N), N, "Метод Эйлера");
+            Рисовать(TaylorFormula(startY, startX, N), N, "ФормулаТейлора3Порядка");
 
         }
     }
@@ -30,7 +30,7 @@ public class Program
         plt.SaveFig(pathF);
     }
     
-    private static (double[], double[]) ТочноеРешение(int startY, int startX, int stepsCount)
+    private static (double[], double[]) ExactSolution(int startY, int startX, int stepsCount)
     {
         double h = 1.0 / stepsCount;
         double nextX = startX;
@@ -50,7 +50,7 @@ public class Program
         return (иксы.ToArray(), игреки.ToArray());
     }
     
-    private static (double[], double[]) МетодЭйлера(int startY, int startX, int stepsCount)
+    private static (double[], double[]) EulerMethod(int startY, int startX, int stepsCount)
     {
         double nextY = startY;
         double nextX = startX;
@@ -61,7 +61,7 @@ public class Program
         {
             иксы.Add(nextX);
             игреки.Add(nextY);
-            nextY = nextY + h * МояФункция(nextX, nextY);
+            nextY = nextY + h * df(nextX, nextY);
             nextX = Math.Round(nextX + h, 10);
         }
 
@@ -69,7 +69,7 @@ public class Program
         return (иксы.ToArray(), игреки.ToArray());
     }
 
-    private static (double[], double[]) ФормулаТейлора3Порядка(int startY, int startX, int stepsCount)
+    private static (double[], double[]) TaylorFormula(int startY, int startX, int stepsCount)
     {
         double x = startX;
         double y = startY;
@@ -79,7 +79,7 @@ public class Program
         for (var i = 0; i < stepsCount; i++)
         {
             var nextX = Math.Round(x + h, 2);
-            var nextY = y + h * МояФункцияП1(x, y) + h * h * МояФункцияП2(x, y) / 2;
+            var nextY = y + h * d2f(x, y) + h * h * d3f(x, y) / 2;
             иксы.Add(nextX);
             игреки.Add(nextY);
             x = nextX;
@@ -89,17 +89,17 @@ public class Program
         return (иксы.ToArray(), игреки.ToArray()); 
     }
 
-    private static double МояФункция(double x, double y)
+    private static double df(double x, double y)
     {
         return y / 2*(x - 1);
     }
 
-    private static double МояФункцияП1(double x, double y)
+    private static double d2f(double x, double y)
     {
         return -y / (4 * (x - 1) * (x-1));
     }
 
-    private static double МояФункцияП2(double x, double y)
+    private static double d3f(double x, double y)
     {
         return y*(8*x-7)/(16 * Math.Pow((x - 4), 4));
     }
